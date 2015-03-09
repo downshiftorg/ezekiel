@@ -1,0 +1,22 @@
+{
+    "name": "netrivet/ezekiel",
+    "description": "Alternative syntax wrapper and added convenience methods for using phpspec/prophecy within PHPUnit",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jared Henderson",
+            "email": "jared@netrivet.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=4.5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "NetRivet\\Ezekiel\\": "src/"
+        }
+    }
+}
