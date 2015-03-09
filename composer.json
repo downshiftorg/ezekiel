@@ -2,6 +2,11 @@
     "name": "netrivet/ezekiel",
     "description": "Alternative syntax wrapper and added convenience methods for using phpspec/prophecy within PHPUnit",
     "license": "MIT",
+    "keywords": [
+        "phpunit",
+        "prophecy",
+        "mocking"
+    ],
     "authors": [
         {
             "name": "Jared Henderson",
