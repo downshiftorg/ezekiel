@@ -25,6 +25,14 @@ class SomeClass {
 class EzekielTestCase extends TestCase {
 
 
+	function testCanUseShortSyntaxToIndicateMethodThatShouldNeverBeCalled() {
+		$stub = $this->stub('SomeClass', ['foo' => '~neverCalled']);
+
+		$this->verifyMockObjects();
+		$this->assertSame(1, $this->getNumAssertions());
+	}
+
+
 	function testReturnValue() {
 		$stub = $this->stub('SomeClass', ['foo' => 'bar']);
 

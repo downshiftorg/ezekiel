@@ -182,6 +182,17 @@ $stub = $this->stub('Foo', ['bar' => [
 ]]);
 ```
 
+If you want to **expect that a method should never be called**, you can use a form of the short-syntax and the special string `~neverCalled` to indicate that:
+
+```php
+<?php
+
+$stub = $this->stub('Foo', ['bar' => '~neverCalled']);
+
+// causes PHPUnit failure
+$stub->bar();
+```
+
 ##Inspecting invocations
 
 Prophecy keeps a record of your test double method invocations, so you can do cool stuff like:

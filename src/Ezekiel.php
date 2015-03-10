@@ -1,10 +1,8 @@
 <?php
-
-
 namespace NetRivet\Ezekiel;
 
-use \Prophecy\Argument as Arg;
 
+use \Prophecy\Argument as Arg;
 
 
 trait Ezekiel {
@@ -22,9 +20,14 @@ trait Ezekiel {
 
 		$class = $this->transformClass($class);
 
-		$prophecy = $this->prophesize($class);
+		$prophecy  = $this->prophesize($class);
+		$intercept = method_exists($this, 'interceptStub');
 
 		foreach ($returns as $method => $methodReturns) {
+
+			if ($intercept) {
+				$this->interceptStub($class, $method, $methodReturns, $prophecy);
+			}
 
 			if (is_string($methodReturns) && strpos($methodReturns, '~firstArg') !== false) {
 
@@ -45,6 +48,10 @@ trait Ezekiel {
 
 				if ($this->isShortReturnSyntax($methodReturns)) {
 					$methodReturns = [['with' => '*', 'returns' => $methodReturns]];
+
+					if ($methodReturns[0]['returns'] === '~neverCalled') {
+						$methodReturns = [['expectArgs' => '*', 'times' => 0]];
+					}
 				}
 
 				foreach ($methodReturns as $index => $return) {
@@ -128,19 +135,29 @@ trait Ezekiel {
 
 
 	public function verifyMockObjects() {
-
 		foreach ((array) $this->mockExpectations as $className => $mock) {
 
 			foreach ($mock['expectedInvocations'] as $method => $expectedInvocations) {
 
+				$objMethod         = $mock['prophecy']->__prophecyOrigClass . '::' . $method . '()';
 				$actualInvocations = $mock['prophecy']->findProphecyMethodCalls($method, new Arg\ArgumentsWildcard([Arg::cetera()]));
 
+
 				foreach ($expectedInvocations as $expectedInvocation) {
+					if ($expectedInvocation['times'] === 0 && count($actualInvocations) > 0) {
+						throw new \PHPUnit_Framework_ExpectationFailedException(sprintf(
+							'%s expected never but called %s time%s',
+							$objMethod,
+							count($actualInvocations),
+							count($actualInvocations) > 1 ? 's' : ''
+						));
+					}
+
+
 					$matchedInvocations   = 0;
 					$actualInvocationArgs = [];
 
 					foreach ($actualInvocations as $actualInvocation) {
-
 						$actualArguments        = $actualInvocation->getArguments();
 						$actualInvocationArgs[] = $actualArguments;
 
@@ -149,7 +166,6 @@ trait Ezekiel {
 						}
 					}
 
-					$objMethod = $mock['prophecy']->__prophecyOrigClass . '::' . $method . '()';
 
 					if ($matchedInvocations > 0) {
 						if ($expectedInvocation['times'] === '*' || $expectedInvocation['times'] === $matchedInvocations) {
@@ -164,6 +180,9 @@ trait Ezekiel {
 								$matchedInvocations > 1 ? 's' : ''
 							));
 						}
+
+					} else if ($matchedInvocations === 0 && $expectedInvocation['times'] === 0) {
+						$this->addToAssertionCount(1);
 
 					} else {
 
@@ -247,7 +266,9 @@ trait Ezekiel {
 
 		} else {
 			foreach ($expected as $index => $expectedArg) {
-				if ($expectedArg !== '*' && $expectedArg !== $actual[$index]) {
+				if (!isset($actual[$index])) {
+					return false;
+				} else if ($expectedArg !== '*' && $expectedArg !== $actual[$index]) {
 					return false;
 				}
 			}
@@ -285,13 +306,13 @@ trait Ezekiel {
 
 
 	protected function getArgHash($class, $returns) {
-		$hashArray = [$class];
+		$hashArray = ['class' => $class];
 
-		foreach ($returns as $return) {
+		foreach ($returns as $index => $return) {
 			if (!is_object($return)) {
-				$hashArray[] = $return;
+				$hashArray['i_' . $index] = $return;
 			} else {
-				$hashArray[] = array_merge(json_decode(json_encode($return), true), [get_class($return)]);
+				$hashArray['i_' . $index] = array_merge(json_decode(json_encode($return), true), [get_class($return)]);
 			}
 		}
 
