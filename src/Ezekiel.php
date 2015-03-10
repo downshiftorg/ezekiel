@@ -12,7 +12,8 @@ trait Ezekiel {
 
 
 	public function stub($class, $returns = []) {
-		$hash = $this->getArgHash($class, $returns);
+		$isMock = false;
+		$hash   = $this->getArgHash($class, $returns);
 
 		if (isset(self::$__cachedStubs[$hash])) {
 			return self::$__cachedStubs[$hash];
@@ -51,6 +52,7 @@ trait Ezekiel {
 
 					if ($methodReturns[0]['returns'] === '~neverCalled') {
 						$methodReturns = [['expectArgs' => '*', 'times' => 0]];
+						$isMock = true;
 					}
 				}
 
@@ -59,6 +61,7 @@ trait Ezekiel {
 					if (isset($return['expectArgs'])) {
 						$methodReturns[$index]['with'] = $return['expectArgs'];
 						$expectedArgs = [];
+						$isMock = true;
 
 						if ($return['expectArgs'] === '*') {
 							$expectedArgs[] = Arg::cetera();
@@ -128,7 +131,10 @@ trait Ezekiel {
 
 		$stub = $prophecy->reveal();
 		$stub->__prophecyOrigClass = $class;
-		self::$__cachedStubs[$hash] = $stub;
+
+		if (!$isMock) {
+			self::$__cachedStubs[$hash] = $stub;
+		}
 
 		return $stub;
 	}
