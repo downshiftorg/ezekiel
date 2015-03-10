@@ -249,8 +249,6 @@ Pull the package in through Composer.
 }
 ```
 
-Assuming you already have PHPUnit installed, you should probably run composer with the `--no-dev` flag to prevent Composer from pulling down PHPUnit again.
-
 Then, just use the Ezekiel trait in a TestCase class that extends `PHPUnit_Framework_TestCase`. If you don't already have such a class, create one, otherwise just add the trait to your existing child class. Here's an example:
 
 ```php
