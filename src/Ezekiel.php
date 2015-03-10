@@ -14,7 +14,7 @@ trait Ezekiel {
 
 
 	public function stub($class, $returns = []) {
-		$hash = json_encode(func_get_args());
+		$hash = $this->getArgHash($class, $returns);
 
 		if (isset(self::$__cachedStubs[$hash])) {
 			return self::$__cachedStubs[$hash];
@@ -281,6 +281,21 @@ trait Ezekiel {
 			return false;
 		}
 		return array_keys($array) !== range(0, count($array) - 1);
+	}
+
+
+	protected function getArgHash($class, $returns) {
+		$hashArray = [$class];
+
+		foreach ($returns as $return) {
+			if (!is_object($return)) {
+				$hashArray[] = $return;
+			} else {
+				$hashArray[] = array_merge(json_decode(json_encode($return), true), [get_class($return)]);
+			}
+		}
+
+		return json_encode($hashArray);
 	}
 
 

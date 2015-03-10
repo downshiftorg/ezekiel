@@ -169,5 +169,20 @@ class EzekielTestCase extends TestCase {
 
 		$this->assertSame($stub1, $stub2);
 	}
+
+
+	function testDoesNotIncorrectlyCacheStubsReturningStubs() {
+		$stub1 = $this->stub('SomeClass', ['foo' => __FUNCTION__ . '1']);
+		$stub2 = $this->stub('SomeClass', ['foo' => __FUNCTION__ . '2']);
+		$stub3 = $this->stub('SomeClass', ['foo' => $stub1]);
+		$stub4 = $this->stub('SomeClass', ['foo' => $stub2]);
+
+		$this->assertNotSame($stub3->foo(), $stub4->foo());
+	}
 }
+
+
+
+
+
 
