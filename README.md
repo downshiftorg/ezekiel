@@ -55,6 +55,15 @@ $stub = $this->stub('Foo', ['bar' => '~firstArg']);
 $stub->bar('baz'); // returns 'baz'
 ```
 
+Stubs/mocks can **return the arbitray arguments** passed by using the special string `~arg=X`
+
+```php
+<?php
+
+$stub = $this->stub('Foo', ['bar' => '~arg=3']);
+$stub->bar('baz', 'foo', 'herp'); // returns 'herp'
+```
+
 Stubs/mocks can **return themselves** by using the special string `~self`
 
 ```php
@@ -71,6 +80,9 @@ Stub/mocks can also **pass arguments through callable functions** using the skin
 
 $stub = $this->stub('Foo', ['bar' => '~firstArg -> strtoupper']);
 $stub->bar('baz'); // returns 'BAZ'
+
+$stub = $this->stub('Foo', ['bar' => '~arg=2 -> strtoupper']);
+$stub->bar('foo', 'bar'); // returns 'BAR'
 ```
 
 Stub/mocks can also **return a joined version of all arguments** passed by using the special string `~joinArgs` or `~joinArgs|DELIMETER`. This can be useful in very simple situations for verifying method invocations when it's not worth it to use the longer syntax or `$this->getInvocations()`

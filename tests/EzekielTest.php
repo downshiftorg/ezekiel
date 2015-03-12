@@ -25,6 +25,39 @@ class SomeClass {
 class EzekielTestCase extends TestCase {
 
 
+	function testCanWildCardIndividualArgumentsForStubs() {
+		$stub = $this->stub('SomeClass', ['foo' => [
+			['with' => ['foo', '*'], 'returns' => 'something'],
+		]]);
+
+		$this->assertSame('something', $stub->foo('foo', 'jimjam'));
+	}
+
+
+	function testCanReturnArbitraryArgsFromLongSyntax() {
+		$stub = $this->stub('SomeClass', ['foo' => [
+			['with' => ['*'], 'returns' => '~arg=2'],
+		]]);
+
+		$this->assertSame('jimjam', $stub->foo('herpderp', 'jimjam'));
+	}
+
+
+	function testCanReturnArbitraryArgsFromLongSyntaxThroughCallable() {
+		$stub = $this->stub('SomeClass', ['foo' => [
+			['with' => ['*'], 'returns' => '~arg=2 -> strtoupper'],
+		]]);
+
+		$this->assertSame('JIMJAM', $stub->foo('herpderp', 'jimjam'));
+	}
+
+
+	function testCanReturnArbitraryArgsUsingShortSyntax() {
+		$stub = $this->stub('SomeClass', ['bar' => '~arg=3']);
+		$this->assertSame(3, $stub->bar(1, 2, 3));
+	}
+
+
 	function testReturnsFirstArgNoMatterHowManyArgsReceivedIfUsingShortSyntax() {
 		$stub = $this->stub('SomeClass', ['bar' => '~firstArg']);
 		$this->assertSame('hello', $stub->bar('hello', 'jim', 'jam'));

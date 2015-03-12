@@ -30,16 +30,14 @@ trait Ezekiel {
 				$this->interceptStub($class, $method, $methodReturns, $prophecy);
 			}
 
-			if (is_string($methodReturns) && strpos($methodReturns, '~firstArg') !== false) {
-
-				if (strpos($methodReturns, ' -> ') !== false) {
-					$prophecy->{$method}(Arg::any())->will(function ($args) use ($methodReturns) {
-						$parts = explode(' -> ', $methodReturns);
-						return call_user_func_array(end($parts), $args);
+			if ($returnArg = self::returnArg($methodReturns)) {
+				if ($returnArg['pipe'] !== false) {
+					$prophecy->{$method}(Arg::cetera())->will(function ($args) use ($returnArg) {
+						return call_user_func_array($returnArg['pipe'], func_get_arg($returnArg['num']));
 					});
 
 				} else {
-					$prophecy->{$method}(Arg::cetera())->willReturnArgument(0);
+					$prophecy->{$method}(Arg::cetera())->willReturnArgument($returnArg['num']);
 				}
 
 			} else if ($methodReturns === '~self') {
@@ -103,10 +101,14 @@ trait Ezekiel {
 
 						$return['with'] = (array) $return['with'];
 
-						if ($args === $return['with'] || $return['with'] === ['*']) {
+						if (self::argumentsMatch($args, $return['with'])) {
 
-							if ($return['returns'] === '~firstArg') {
-								return $args[0];
+							if ($returnArg = self::returnArg($return['returns'])) {
+								if ($returnArg['pipe']) {
+									return call_user_func_array($returnArg['pipe'], [$args[$returnArg['num']]]);
+								} else {
+									return $args[$returnArg['num']];
+								}
 
 							} else if ($return['returns'] === '~self') {
 								return $prophecy;
@@ -166,8 +168,7 @@ trait Ezekiel {
 					foreach ($actualInvocations as $actualInvocation) {
 						$actualArguments        = $actualInvocation->getArguments();
 						$actualInvocationArgs[] = $actualArguments;
-
-						if ($this->argumentsMatch($actualInvocation->getArguments(), $expectedInvocation['arguments'])) {
+						if (self::argumentsMatch($actualInvocation->getArguments(), $expectedInvocation['arguments'])) {
 							$matchedInvocations++;
 						}
 					}
@@ -266,8 +267,11 @@ trait Ezekiel {
 	}
 
 
-	protected function argumentsMatch($actual, $expected) {
-		if ($actual === $expected) {
+	protected static function argumentsMatch($actual, $expected) {
+		if ($expected === ['*']) {
+			return true;
+
+		} else if ($actual === $expected) {
 			return true;
 
 		} else {
@@ -323,6 +327,30 @@ trait Ezekiel {
 		}
 
 		return json_encode($hashArray);
+	}
+
+
+	protected static function returnArg($methodReturns) {
+		if (!is_string($methodReturns)) {
+			return false;
+		} else if (strpos($methodReturns, '~firstArg') !== 0 && strpos($methodReturns, '~arg=') !== 0) {
+			return false;
+		}
+
+		$num  = 0;
+		$pipe = false;
+
+		if (strpos($methodReturns, '~arg=') === 0) {
+			preg_match("/~arg=([0-9]+)/", $methodReturns, $matches);
+			$num = (int) $matches[1] - 1;
+		}
+
+		if (strpos($methodReturns, ' -> ') !== false) {
+			$parts = explode(' -> ', $methodReturns);
+			$pipe  = end($parts);
+		}
+
+		return compact('num', 'pipe');
 	}
 
 
