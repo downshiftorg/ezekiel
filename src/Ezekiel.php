@@ -39,7 +39,7 @@ trait Ezekiel {
 					});
 
 				} else {
-					$prophecy->{$method}(Arg::any())->willReturnArgument(0);
+					$prophecy->{$method}(Arg::cetera())->willReturnArgument(0);
 				}
 
 			} else if ($methodReturns === '~self') {

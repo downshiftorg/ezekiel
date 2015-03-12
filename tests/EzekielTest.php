@@ -25,6 +25,12 @@ class SomeClass {
 class EzekielTestCase extends TestCase {
 
 
+	function testReturnsFirstArgNoMatterHowManyArgsReceivedIfUsingShortSyntax() {
+		$stub = $this->stub('SomeClass', ['bar' => '~firstArg']);
+		$this->assertSame('hello', $stub->bar('hello', 'jim', 'jam'));
+	}
+
+
 	function testCanUseShortSyntaxToIndicateMethodThatShouldNeverBeCalled() {
 		$stub = $this->stub('SomeClass', ['foo' => '~neverCalled']);
 
