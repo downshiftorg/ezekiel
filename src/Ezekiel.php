@@ -31,17 +31,7 @@ trait Ezekiel {
 				$this->interceptStub($class, $method, $methodReturns, $prophecy);
 			}
 
-			if ($returnArg = self::returnArg($methodReturns)) {
-				if ($returnArg['pipe'] !== false) {
-					$prophecy->{$method}(Arg::cetera())->will(function ($args) use ($returnArg) {
-						return call_user_func_array($returnArg['pipe'], func_get_arg($returnArg['num']));
-					});
-
-				} else {
-					$prophecy->{$method}(Arg::cetera())->willReturnArgument($returnArg['num']);
-				}
-
-			} else if ($methodReturns === '~self') {
+			if ($methodReturns === '~self') {
 				$prophecy->{$method}(Arg::any())->willReturn($prophecy);
 
 			} else {

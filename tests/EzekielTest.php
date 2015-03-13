@@ -1,6 +1,4 @@
 <?php
-
-
 namespace NetRivet\Ezekiel;
 
 
@@ -159,7 +157,7 @@ class EzekielTestCase extends TestCase {
 	function testStubWithGenericExpectationsWorks() {
 		$stub = $this->stub('SomeClass', ['foo' => [
 			['expectArgs' => ['jimjam'], 'andReturn' => 'hashbaz'],
-			['with' => '*', 'return' => 'somethjing else']
+			['with' => '*', 'return' => 'somethjing else'],
 		]]);
 
 		$this->assertSame('hashbaz', $stub->foo('jimjam'));
