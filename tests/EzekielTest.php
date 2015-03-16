@@ -23,6 +23,17 @@ class SomeClass {
 class EzekielTestCase extends TestCase {
 
 
+	function testCanMatchInvocationWithWildcardAllArgs() {
+		$stub = $this->stub('SomeClass', ['foo' => [
+			['expectArgs' => '*', 'times' => 1, 'andReturn' => 'some val 123'],
+		]]);
+
+		$this->assertSame('some val 123', $stub->foo());
+		$this->verifyMockObjects();
+		$this->assertSame(1, $this->getNumAssertions());
+	}
+
+
 	function testCanWildCardIndividualArgumentsForStubs() {
 		$stub = $this->stub('SomeClass', ['foo' => [
 			['with' => ['foo', '*'], 'returns' => 'something'],

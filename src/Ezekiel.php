@@ -23,7 +23,6 @@ trait Ezekiel {
 
 		$prophecy  = $this->prophesize($class);
 		$intercept = method_exists($this, 'interceptStub');
-		$argsMatch = $this->getArgumentsMatchFn();
 
 		foreach ($returns as $method => $methodReturns) {
 
@@ -78,7 +77,7 @@ trait Ezekiel {
 					}
 				}
 
-				$prophecy->{$method}(Arg::cetera())->will(function ($args) use ($methodReturns, $prophecy, $method, $argsMatch) {
+				$prophecy->{$method}(Arg::cetera())->will(function ($args) use ($methodReturns, $prophecy, $method) {
 
 					foreach ($methodReturns as $return) {
 
@@ -92,7 +91,7 @@ trait Ezekiel {
 
 						$return['with'] = (array) $return['with'];
 
-						if ($argsMatch($args, $return['with'])) {
+						if (self::argumentsMatch($args, $return['with'])) {
 
 							if ($returnArg = self::returnArg($return['returns'])) {
 								if ($returnArg['pipe']) {
@@ -134,8 +133,6 @@ trait Ezekiel {
 
 
 	public function verifyMockObjects() {
-		$argsMatch = $this->getArgumentsMatchFn();
-
 		foreach ((array) $this->mockExpectations as $className => $mock) {
 
 			foreach ($mock['expectedInvocations'] as $method => $expectedInvocations) {
@@ -161,7 +158,7 @@ trait Ezekiel {
 					foreach ($actualInvocations as $actualInvocation) {
 						$actualArguments        = $actualInvocation->getArguments();
 						$actualInvocationArgs[] = $actualArguments;
-						if ($argsMatch($actualInvocation->getArguments(), $expectedInvocation['arguments'])) {
+						if (self::argumentsMatch($actualInvocation->getArguments(), $expectedInvocation['arguments'])) {
 							$matchedInvocations++;
 						}
 					}
@@ -260,26 +257,27 @@ trait Ezekiel {
 	}
 
 
-	protected function getArgumentsMatchFn() {
-		return function ($actual, $expected) {
-			if ($expected === ['*']) {
-				return true;
+	protected static function argumentsMatch($actual, $expected) {
+		if ($expected === ['*']) {
+			return true;
 
-			} else if ($actual === $expected) {
-				return true;
+		} else if (count($expected) === 1 && is_object($expected[0]) && get_class($expected[0]) === 'Prophecy\Argument\Token\AnyValuesToken') {
+			return true;
 
-			} else {
-				foreach ($expected as $index => $expectedArg) {
-					if (!isset($actual[$index])) {
-						return false;
-					} else if ($expectedArg !== '*' && $expectedArg !== $actual[$index]) {
-						return false;
-					}
+		} else if ($actual === $expected) {
+			return true;
+
+		} else {
+			foreach ($expected as $index => $expectedArg) {
+				if (!isset($actual[$index])) {
+					return false;
+				} else if ($expectedArg !== '*' && $expectedArg !== $actual[$index]) {
+					return false;
 				}
 			}
+		}
 
-			return true;
-		};
+		return true;
 	}
 
 
