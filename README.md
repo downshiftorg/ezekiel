@@ -215,7 +215,7 @@ Prophecy keeps a record of your test double method invocations, so you can do co
 $prophecy->someMethod()->shouldHaveBeenCalled();
 ```
 
-Ezekiel give you an alternative method for inspecting recorded invocations that can be helpful in making very specific test spy assertions without writing crazy prediction matchers and callbacks.
+Ezekiel gives you an alternative method for inspecting recorded invocations that can be helpful in making very specific test spy assertions without writing crazy prediction matchers and callbacks.
 
 ```php
 <?php
