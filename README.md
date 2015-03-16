@@ -272,14 +272,27 @@ Pull the package in through Composer.
 }
 ```
 
-Then, just use the Ezekiel trait in a TestCase class that extends `PHPUnit_Framework_TestCase`. If you don't already have such a class, create one, otherwise just add the trait to your existing child class. Here's an example:
+Then, just use the Ezekiel trait in a TestCase class that extends `PHPUnit_Framework_TestCase`.
 
 ```php
 <?php
 
 namespace Acme\Foo;
 
-class MyTestCase extends \PHPUnit_Framework_Testcase {
+class TestFoo extends \PHPUnit_Framework_Testcase {
+
+	use \NetRivet\Ezekiel\Ezekiel;
+
+}
+```
+
+If you want to have Ezekiel automatically available in all of your test cases, add the trait to a child class of `PHPUnit_Framework_TestCase` that all of your test case classes extend, like so:
+
+<?php
+
+namespace Acme;
+
+class AcmeTestCase extends \PHPUnit_Framework_Testcase {
 
 	use \NetRivet\Ezekiel\Ezekiel;
 
