@@ -293,7 +293,7 @@ Then, just use the Ezekiel trait in a TestCase class that extends `PHPUnit_Frame
 
 namespace Acme\Foo;
 
-class TestFoo extends \PHPUnit_Framework_Testcase {
+class FooTest extends \PHPUnit_Framework_Testcase {
 
 	use \NetRivet\Ezekiel\Ezekiel;
 
@@ -302,6 +302,7 @@ class TestFoo extends \PHPUnit_Framework_Testcase {
 
 If you want to have Ezekiel automatically available in all of your test cases, add the trait to a child class of `PHPUnit_Framework_TestCase` that all of your test case classes extend, like so:
 
+```php
 <?php
 
 namespace Acme;
