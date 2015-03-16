@@ -23,6 +23,15 @@ class SomeClass {
 class EzekielTestCase extends TestCase {
 
 
+	function testGetInvocationsAcceptsAliasToLastInvocation() {
+		$stub = $this->stub('SomeClass', ['foo' => 'test last alias']);
+		$stub->foo(1);
+		$stub->foo(2);
+
+		$this->assertSame(2, $this->getInvocations($stub, 'foo', '~last', 0));
+	}
+
+
 	function testCanMatchInvocationWithWildcardAllArgs() {
 		$stub = $this->stub('SomeClass', ['foo' => [
 			['expectArgs' => '*', 'times' => 1, 'andReturn' => 'some val 123'],

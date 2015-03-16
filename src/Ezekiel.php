@@ -216,6 +216,9 @@ trait Ezekiel {
 		}
 
 		if (null !== $invocationIndex) {
+			if ('~last' === $invocationIndex) {
+				$invocationIndex = count($invocations) - 1;
+			}
 
 			$objMethod     = $stub->__prophecyOrigClass . '::' . $method . '()';
 			$invocationNum = $invocationIndex + 1;

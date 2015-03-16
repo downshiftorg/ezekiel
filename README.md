@@ -233,6 +233,20 @@ $this->getInvocations($stub, 'someMethod', $invocationIndex = 0);
 $this->getInvocations($stub, 'someMethod', $invocationIndex = 0, $argumentIndex = 0);
 ```
 
+You can also pass the special string `~last` for the third paramater `$invocationIndex` as a shortcut to returning the last invocation of the requested method. This is useful if you're re-using a stub between test methods and want to inspect the most recent invocation of a method.
+
+```php
+<?php
+
+$stub = $this->stub('SomeClass', ['someMethod' => false]);
+$stub->someMethod(1);
+$stub->someMethod(false);
+$stub->someMethod('foo');
+
+$this->getInvocations($stub, 'someMethod', '~last');    // returns ['foo'];
+$this->getInvocations($stub, 'someMethod', '~last', 0); // returns 'foo';
+```
+
 **Note:** to use `Ezekiel::getInvocations()` you need to reset the mockInvocations in your teardown method like this: `$this->mockExpectations = [];` The Ezekiel trait provides a `tearDown` method that does this for you, but if you define your own in your test class, you'll need to do it yourself.
 
 ##Transforming class names
