@@ -124,7 +124,7 @@ $this->someProp = 'Howdy';
 $stub->bar('friends'); // returns 'Howdy FRIENDS!'
 ```
 
-You can also **combine the `@prop` syntax with anonymous functions to dynamically return the result of invoking a public property which is a anonymous function**:
+You can also **combine the `@prop` syntax with anonymous functions** to dynamically return the result of invoking a public property which is a anonymous function:
 
 ```php
 <?php
