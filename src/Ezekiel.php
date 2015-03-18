@@ -114,9 +114,9 @@ trait Ezekiel {
 
 							} else if (is_string($return['returns']) && strpos($return['returns'], '@') === 0) {
 								$prop = preg_replace('/^@/', '', $return['returns']);
-								return $that->{$prop};
+								return property_exists($that, $prop) ? $that->{$prop} : $return['returns'];
 
-							} else if (is_object($return['returns']) && get_class($return['returns']) === 'Closure') {
+							} else if (is_object($return['returns']) && $return['returns'] instanceof \Closure) {
 								return call_user_func_array($return['returns'], $args);
 
 							} else {
