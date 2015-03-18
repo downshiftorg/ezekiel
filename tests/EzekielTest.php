@@ -23,6 +23,25 @@ class SomeClass {
 class EzekielTestCase extends TestCase {
 
 
+	function testReturnClosure() {
+		$stub = $this->stub('SomeClass', ['foo' => function(){return 'closure';}]);
+		$this->assertSame('closure', $stub->foo());
+	}
+
+
+	function testReturnedClosureIsBoundToTestCase() {
+		$stub = $this->stub('SomeClass', ['bar' => function(){return $this->someProp;}]);
+		$this->someProp = 'test bound';
+		$this->assertSame('test bound', $stub->bar());
+	}
+
+
+	function testClosureReturnGetsPassedArgs() {
+		$stub = $this->stub('SomeClass', ['foo' => function($arg1){return strtoupper($arg1);}]);
+		$this->assertSame('BAR', $stub->foo('bar'));
+	}
+
+
 	function testCanReturnLiveTestCasePropertiesWithAtSyntax() {
 		$stub = $this->stub('SomeClass', ['foo' => '@prop']);
 

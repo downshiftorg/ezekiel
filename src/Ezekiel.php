@@ -93,7 +93,6 @@ trait Ezekiel {
 						$return['with'] = (array) $return['with'];
 
 						if (self::argumentsMatch($args, $return['with'])) {
-
 							if ($returnArg = self::returnArg($return['returns'])) {
 								if ($returnArg['pipe']) {
 									return call_user_func_array($returnArg['pipe'], [$args[$returnArg['num']]]);
@@ -116,6 +115,9 @@ trait Ezekiel {
 							} else if (is_string($return['returns']) && strpos($return['returns'], '@') === 0) {
 								$prop = preg_replace('/^@/', '', $return['returns']);
 								return $that->{$prop};
+
+							} else if (is_object($return['returns']) && get_class($return['returns']) === 'Closure') {
+								return call_user_func_array($return['returns'], $args);
 
 							} else {
 								return $return['returns'];
@@ -322,6 +324,8 @@ trait Ezekiel {
 		foreach ($returns as $index => $return) {
 			if (!is_object($return)) {
 				$hashArray['i_' . $index] = $return;
+			} else if (get_class($return) === 'Closure') {
+				$hashArray['i_' . $index] = spl_object_hash($return);
 			} else {
 				$hashArray['i_' . $index] = array_merge(json_decode(json_encode($return), true), [get_class($return)]);
 			}

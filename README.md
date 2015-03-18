@@ -108,6 +108,22 @@ $stub = $this->stub('Foo', ['bar' => '~joinArgs|*']);
 $stub->bar('baz', 'herp', 'derp'); // returns 'baz*herp*derp'
 ```
 
+Stubs/mocks can also **return the result of invoking a closure** which is bound to the test-case's `$this` and receives the invocation arguments as arguments.
+
+```php
+<?php
+
+$stub = $this->stub('Foo', ['bar' => function($str) {
+	return $this->someProp . ' ' . strtoupper($str) . '!';
+}]);
+
+$this->someProp = 'Hello';
+$stub->bar('world'); // returns 'Hello WORLD!'
+
+$this->someProp = 'Howdy';
+$stub->bar('friends'); // returns 'Howdy FRIENDS!'
+```
+
 ##Longer syntax
 
 Ezekiel can also accept a longer syntax that allows you to match arguments and return different values using `'with'` and `'returns'` keywords.
