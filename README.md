@@ -108,7 +108,7 @@ $stub = $this->stub('Foo', ['bar' => '~joinArgs|*']);
 $stub->bar('baz', 'herp', 'derp'); // returns 'baz*herp*derp'
 ```
 
-Stubs/mocks can also **return the result of invoking a closure** which is bound to the test-case's `$this` and receives the invocation arguments as arguments.
+Stubs/mocks can also **return the result of invoking an anonymous function** which is bound to the test-case's `$this` and receives the invocation arguments as arguments.
 
 ```php
 <?php
@@ -124,9 +124,9 @@ $this->someProp = 'Howdy';
 $stub->bar('friends'); // returns 'Howdy FRIENDS!'
 ```
 
-You can also combine the `@prop` syntax with anonymous functions to dynamically return the result of invoking a public property which is a anonymous function, i.e., a `Closure` object:
+You can also **combine the `@prop` syntax with anonymous functions to dynamically return the result of invoking a public property which is a anonymous function**:
 
-```
+```php
 <?php
 
 $stub = $this->stub('Foo', ['bar' => '@someProp']);
