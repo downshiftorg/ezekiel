@@ -114,7 +114,14 @@ trait Ezekiel {
 
 							} else if (is_string($return['returns']) && strpos($return['returns'], '@') === 0) {
 								$prop = preg_replace('/^@/', '', $return['returns']);
-								return property_exists($that, $prop) ? $that->{$prop} : $return['returns'];
+								$prop = property_exists($that, $prop) ? $that->{$prop} : $return['returns'];
+
+								if (is_object($prop) && $prop instanceof \Closure) {
+									return call_user_func_array($prop, $args);
+
+								} else {
+									return $prop;
+								}
 
 							} else if (is_object($return['returns']) && $return['returns'] instanceof \Closure) {
 								return call_user_func_array($return['returns'], $args);

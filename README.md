@@ -55,7 +55,7 @@ $stub = $this->stub('Foo', ['bar' => '~firstArg']);
 $stub->bar('baz'); // returns 'baz'
 ```
 
-Stubs/mocks can **return the arbitray arguments** passed by using the special string `~arg=X`
+Stubs/mocks can **return the arbitrary arguments** passed by using the special string `~arg=X`
 
 ```php
 <?php
@@ -122,6 +122,21 @@ $stub->bar('world'); // returns 'Hello WORLD!'
 
 $this->someProp = 'Howdy';
 $stub->bar('friends'); // returns 'Howdy FRIENDS!'
+```
+
+You can also combine the `@prop` syntax with anonymous functions to dynamically return the result of invoking a public property which is a anonymous function, i.e., a `Closure` object:
+
+```
+<?php
+
+$stub = $this->stub('Foo', ['bar' => '@someProp']);
+
+$this->someProp = function($arg1) {
+	return $arg1 === 'foo' ? 'bar' : 'baz';
+};
+
+$stub->bar('foo'); // returns 'bar'
+$stub->bar('qux'); // returns 'baz'
 ```
 
 ##Longer syntax
@@ -277,7 +292,7 @@ $this->getInvocations($stub, 'someMethod', '~last');    // returns ['foo'];
 $this->getInvocations($stub, 'someMethod', '~last', 0); // returns 'foo';
 ```
 
-**Note:** to use `Ezekiel::getInvocations()` you need to reset the mockInvocations in your teardown method like this: `$this->mockExpectations = [];` The Ezekiel trait provides a `tearDown` method that does this for you, but if you define your own in your test class, you'll need to do it yourself.
+**Note:** to use `Ezekiel::getInvocations()` you need to reset the recorded invocations in your teardown method like this: `$this->mockExpectations = [];` The Ezekiel trait provides a `tearDown` method that does this for you, but if you define your own in your test class, you'll need to do it yourself.
 
 ##Transforming class names
 
