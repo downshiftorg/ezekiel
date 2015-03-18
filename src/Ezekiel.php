@@ -2,7 +2,7 @@
 namespace NetRivet\Ezekiel;
 
 
-use \Prophecy\Argument as Arg;
+use Prophecy\Argument as Arg;
 
 
 trait Ezekiel {
@@ -77,7 +77,8 @@ trait Ezekiel {
 					}
 				}
 
-				$prophecy->{$method}(Arg::cetera())->will(function ($args) use ($methodReturns, $prophecy, $method) {
+				$that = $this;
+				$prophecy->{$method}(Arg::cetera())->will(function ($args) use ($methodReturns, $prophecy, $method, $that) {
 
 					foreach ($methodReturns as $return) {
 
@@ -111,6 +112,10 @@ trait Ezekiel {
 								}
 
 								return join($delimiter, $args);
+
+							} else if (is_string($return['returns']) && strpos($return['returns'], '@') === 0) {
+								$prop = preg_replace('/^@/', '', $return['returns']);
+								return $that->{$prop};
 
 							} else {
 								return $return['returns'];

@@ -23,6 +23,31 @@ class SomeClass {
 class EzekielTestCase extends TestCase {
 
 
+	function testCanReturnLiveTestCasePropertiesWithAtSyntax() {
+		$stub = $this->stub('SomeClass', ['foo' => '@prop']);
+
+		$this->prop = 'bar';
+		$this->assertSame('bar', $stub->foo());
+
+		$this->prop = 'baz';
+		$this->assertSame('baz', $stub->foo());
+	}
+
+
+	function testCanReturnLiveTestCasePropertiesWithAtSyntaxAndLongSyntax() {
+		$stub = $this->stub('SomeClass', ['foo' => [
+			['with' => ['somearg'], 'returns' => '@herp'],
+		]]);
+
+		$this->herp = 'derp';
+		$this->assertSame('derp', $stub->foo('somearg'));
+
+		$this->herp = 'qux';
+		$this->assertSame('qux', $stub->foo('somearg'));
+	}
+
+
+
 	function testGetInvocationsAcceptsAliasToLastInvocation() {
 		$stub = $this->stub('SomeClass', ['foo' => 'test last alias']);
 		$stub->foo(1);

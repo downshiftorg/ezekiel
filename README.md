@@ -1,7 +1,7 @@
 Ezekiel
 ==
 
-Ezekiel gives you an alternate syntax wrapper and added convenience methods for working with the <a href="https://github.com/phpspec/prophecy">phpspec/prophecy</a> library from within <a href="http://phpunit.de">PHPUnit</a>.
+Ezekiel gives you an alternate wrapper, some syntactic sugar, and added convenience methods for working with the <a href="https://github.com/phpspec/prophecy">phpspec/prophecy</a> library from within <a href="http://phpunit.de">PHPUnit</a>.
 
 For making simple stubs and mocks with Prophecy, Ezekiel reduces a lot of the boilerplate code and gives you a terse, but fairly expressive syntax for creating test double objects.
 
@@ -39,7 +39,7 @@ $foo = $this->stub('Foo', ['someMethod' => false]);
 // stub multiple methods
 $bar = $this->stub('Bar', [
 	'someMethod'  => false,
-	'otherMethod' => 'true',
+	'otherMethod' => true,
 	'jimJam'      => 'some text'
 ]);
 ```
@@ -73,7 +73,21 @@ $stub = $this->stub('Foo', ['bar' => '~self']);
 $stub->bar(); // returns $stub
 ```
 
-Stub/mocks can also **pass arguments through callable functions** using the skinny arrow ` -> `
+Stub/mocks can also **return references to test-case public properties** using the coffee script-ish `@` syntax. This is really useful if you want to setup a generic stub or mock in a test case `setUp()` method and modify individual components of what the test double returns for different test methods.
+
+```php
+<?php
+
+$stub = $this->stub('Foo', ['bar' => '@myProp']);
+
+$this->myProp = true;
+$stub->bar(); // returns true
+
+$this->myProp = false;
+$stub->bar(); // returns false
+```
+
+Stub/mocks can also **pass arguments through callable function names** (not closures) using the skinny arrow ` -> `
 
 ```php
 <?php
