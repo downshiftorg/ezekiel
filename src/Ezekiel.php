@@ -329,7 +329,14 @@ trait Ezekiel {
 		$hashArray = ['class' => $class];
 
 		foreach ($returns as $index => $return) {
-			if (!is_object($return)) {
+			if (is_string($return) && strpos($return, '@') === 0) {
+				$prop = preg_replace('/^@/', '', $return);
+				if (property_exists($this, $prop)) {
+					$hashArray['i_' . $index] = $this->getArgHash('@', [$this->{$prop}]);
+				} else {
+					$hashArray['i_' . $index] = $prop;
+				}
+			} else if (!is_object($return)) {
 				$hashArray['i_' . $index] = $return;
 			} else if (get_class($return) === 'Closure') {
 				$hashArray['i_' . $index] = spl_object_hash($return);

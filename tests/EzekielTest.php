@@ -23,6 +23,17 @@ class SomeClass {
 class EzekielTestCase extends TestCase {
 
 
+	function testCacheNotMixedUpByPropSyntax() {
+		$this->myProp = 'foo';
+		$stub1 = $this->stub('SomeClass', ['foo' => '@myProp']);
+
+		$this->myProp = 'bar';
+		$stub2 = $this->stub('SomeClass', ['foo' => '@myProp']);
+
+		$this->assertNotSame($stub1, $stub2);
+	}
+
+
 	function testReturnClosure() {
 		$stub = $this->stub('SomeClass', ['foo' => function(){return 'closure';}]);
 		$this->assertSame('closure', $stub->foo());
