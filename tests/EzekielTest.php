@@ -23,6 +23,15 @@ class SomeClass {
 class EzekielTestCase extends TestCase {
 
 
+	function testArgWildcardMatchesNull() {
+		$stub = $this->stub('SomeClass', ['foo' => [
+			['with' => ['*', 'jimjam', 'qux'], 'returns' => 'result'],
+		]]);
+
+		$this->assertSame('result', $stub->foo(null, 'jimjam', 'qux'));
+	}
+
+
 	function testCacheNotMixedUpByPropSyntax() {
 		$this->myProp = 'foo';
 		$stub1 = $this->stub('SomeClass', ['foo' => '@myProp']);

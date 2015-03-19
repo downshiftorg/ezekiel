@@ -286,9 +286,11 @@ trait Ezekiel {
 
 		} else {
 			foreach ($expected as $index => $expectedArg) {
-				if (!isset($actual[$index])) {
+				if ($expectedArg === '*') {
+					continue;
+				} else if (!isset($actual[$index])) {
 					return false;
-				} else if ($expectedArg !== '*' && $expectedArg !== $actual[$index]) {
+				} else if ($expectedArg !== $actual[$index]) {
 					return false;
 				}
 			}
