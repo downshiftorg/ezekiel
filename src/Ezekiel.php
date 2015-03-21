@@ -8,7 +8,7 @@ use Prophecy\Argument as Arg;
 trait Ezekiel {
 
 	public static $__cachedStubs = [];
-	protected $mockExpectations = [];
+	protected $recordedCalls = [];
 
 
 	public function stub($class, $returns = []) {
@@ -62,15 +62,15 @@ trait Ezekiel {
 
 						$mockClass = get_class($prophecy->reveal());
 
-						if (!isset($this->mockExpectations[$mockClass])) {
-							$this->mockExpectations[$mockClass] = ['prophecy' => $prophecy, 'expectedInvocations' => []];
+						if (!isset($this->recordedCalls[$mockClass])) {
+							$this->recordedCalls[$mockClass] = ['prophecy' => $prophecy, 'expectedInvocations' => []];
 						}
 
-						if (!isset($this->mockExpectations[$mockClass]['expectedInvocations'][$method])) {
-							$this->mockExpectations[$mockClass]['expectedInvocations'][$method] = [];
+						if (!isset($this->recordedCalls[$mockClass]['expectedInvocations'][$method])) {
+							$this->recordedCalls[$mockClass]['expectedInvocations'][$method] = [];
 						}
 
-						$this->mockExpectations[$mockClass]['expectedInvocations'][$method][] = [
+						$this->recordedCalls[$mockClass]['expectedInvocations'][$method][] = [
 							'arguments' => $expectedArgs,
 							'times'     => isset($return['times']) ? $return['times'] : '*',
 						];
@@ -147,7 +147,7 @@ trait Ezekiel {
 
 
 	public function verifyMockObjects() {
-		foreach ((array) $this->mockExpectations as $className => $mock) {
+		foreach ((array) $this->recordedCalls as $className => $mock) {
 
 			foreach ($mock['expectedInvocations'] as $method => $expectedInvocations) {
 
@@ -221,7 +221,7 @@ trait Ezekiel {
 	}
 
 
-	public function getInvocations($stub, $method, $invocationIndex = null, $argumentIndex = null) {
+	public function calls($stub, $method, $invocationIndex = null, $argumentIndex = null) {
 		$callObjects = $stub->getProphecy()->findProphecyMethodCalls($method, new Arg\ArgumentsWildcard([Arg::cetera()]));
 		$invocations = [];
 
@@ -264,7 +264,7 @@ trait Ezekiel {
 
 
 	public function tearDown() {
-		$this->mockExpectations = [];
+		$this->recordedCalls = [];
 		parent::tearDown();
 	}
 
@@ -347,7 +347,7 @@ trait Ezekiel {
 			}
 		}
 
-		return json_encode($hashArray);
+		return json_encode( $hashArray);
 	}
 
 

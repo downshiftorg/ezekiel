@@ -86,13 +86,12 @@ class EzekielTestCase extends TestCase {
 	}
 
 
-
-	function testGetInvocationsAcceptsAliasToLastInvocation() {
+	function testCallsAcceptsAliasToLastInvocation() {
 		$stub = $this->stub('SomeClass', ['foo' => 'test last alias']);
 		$stub->foo(1);
 		$stub->foo(2);
 
-		$this->assertSame(2, $this->getInvocations($stub, 'foo', '~last', 0));
+		$this->assertSame(2, $this->calls($stub, 'foo', '~last', 0));
 	}
 
 
@@ -280,11 +279,11 @@ class EzekielTestCase extends TestCase {
 	}
 
 
-	function testCanInspectInvocationsWithGetInvocations() {
+	function testCanInspectInvocationsWithcalls() {
 		$stub = $this->stub('SomeClass', ['foo' => 'some value']);
 		$stub->foo();
 		$stub->foo('again');
-		$invocations = $this->getInvocations($stub, 'foo');
+		$invocations = $this->calls($stub, 'foo');
 
 		$this->assertCount(2, $invocations);
 		$this->assertSame([], $invocations[0]);

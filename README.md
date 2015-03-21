@@ -87,7 +87,7 @@ $this->myProp = false;
 $stub->bar(); // returns false
 ```
 
-Stub/mocks can also **pass arguments through callable function names** (not closures) using the skinny arrow ` -> `
+Stub/mocks can also **pass arguments through callable function names** using the skinny arrow ` -> `
 
 ```php
 <?php
@@ -99,7 +99,7 @@ $stub = $this->stub('Foo', ['bar' => '~arg=2 -> strtoupper']);
 $stub->bar('foo', 'bar'); // returns 'BAR'
 ```
 
-Stub/mocks can also **return a joined version of all arguments** passed by using the special string `~joinArgs` or `~joinArgs|DELIMETER`. This can be useful in very simple situations for verifying method invocations when it's not worth it to use the longer syntax or `$this->getInvocations()`
+Stub/mocks can also **return a joined version of all arguments** passed by using the special string `~joinArgs` or `~joinArgs|DELIMETER`. This can be useful in very simple situations for verifying method invocations when it's not worth it to use the longer syntax or `$this->calls()`
 
 ```php
 <?php
@@ -269,16 +269,16 @@ $stub = $this->stub('SomeClass', ['someMethod' => false]);
 $stub->someMethod('foo', 'bar');
 
 // returns array of all recorded invocations => [['foo', 'bar']];
-$this->getInvocations($stub, 'someMethod');
+$this->calls($stub, 'someMethod');
 
 // returns arguments for first method invocation => ['foo', 'bar'];
-$this->getInvocations($stub, 'someMethod', $invocationIndex = 0);
+$this->calls($stub, 'someMethod', $invocationIndex = 0);
 
 // returns first argument for first method invocation => 'foo';
-$this->getInvocations($stub, 'someMethod', $invocationIndex = 0, $argumentIndex = 0);
+$this->calls($stub, 'someMethod', $invocationIndex = 0, $argumentIndex = 0);
 ```
 
-You can also pass the special string `~last` for the third paramater `$invocationIndex` as a shortcut to returning the last invocation of the requested method. This is useful if you're re-using a stub between test methods and want to inspect the most recent invocation of a method.
+You can also pass the special string `~last` for the third paramater `$invocationIndex` as a shortcut to returning the last invocation of the requested method. This is useful if you're re-using a cached stub and want to inspect the most recent invocation of a method.
 
 ```php
 <?php
@@ -288,11 +288,11 @@ $stub->someMethod(1);
 $stub->someMethod(false);
 $stub->someMethod('foo');
 
-$this->getInvocations($stub, 'someMethod', '~last');    // returns ['foo'];
-$this->getInvocations($stub, 'someMethod', '~last', 0); // returns 'foo';
+$this->calls($stub, 'someMethod', '~last');    // returns ['foo'];
+$this->calls($stub, 'someMethod', '~last', 0); // returns 'foo';
 ```
 
-**Note:** to use `Ezekiel::getInvocations()` you need to reset the recorded invocations in your teardown method like this: `$this->mockExpectations = [];` The Ezekiel trait provides a `tearDown` method that does this for you, but if you define your own in your test class, you'll need to do it yourself.
+**Note:** to use `Ezekiel::calls()` you need to reset the recorded invocations in your teardown method like this: `$this->recordedCalls = [];` The Ezekiel trait provides a `tearDown` method that does this for you, but if you define your own in your test class, you'll need to do it yourself.
 
 ##Transforming class names
 
