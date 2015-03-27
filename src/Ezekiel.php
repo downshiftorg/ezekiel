@@ -12,8 +12,9 @@ trait Ezekiel {
 
 
 	public function stub($class, $returns = []) {
-		$isMock = false;
-		$hash   = $this->getArgHash($class, $returns);
+		$isMock  = false;
+		$returns = $this->transformReturns($returns, $class);
+		$hash    = $this->getArgHash($class, $returns);
 
 		if (isset(self::$__cachedStubs[$hash])) {
 			return self::$__cachedStubs[$hash];
@@ -274,6 +275,11 @@ trait Ezekiel {
 	}
 
 
+	protected function transformReturns($returns, $class) {
+		return $returns;
+	}
+
+
 	protected static function argumentsMatch($actual, $expected) {
 		if ($expected === ['*']) {
 			return true;
@@ -331,14 +337,7 @@ trait Ezekiel {
 		$hashArray = ['class' => $class];
 
 		foreach ($returns as $index => $return) {
-			if (is_string($return) && strpos($return, '@') === 0) {
-				$prop = preg_replace('/^@/', '', $return);
-				if (property_exists($this, $prop)) {
-					$hashArray['i_' . $index] = $this->getArgHash('@', [$this->{$prop}]);
-				} else {
-					$hashArray['i_' . $index] = $prop;
-				}
-			} else if (!is_object($return)) {
+			if (!is_object($return)) {
 				$hashArray['i_' . $index] = $return;
 			} else if (get_class($return) === 'Closure') {
 				$hashArray['i_' . $index] = spl_object_hash($return);
@@ -347,7 +346,21 @@ trait Ezekiel {
 			}
 		}
 
-		return json_encode( $hashArray);
+
+		return $this->hashProps(json_encode($hashArray));
+	}
+
+
+	protected function hashProps($encoded) {
+		return preg_replace_callback("/@([^\"]+)/", function($matches) {
+			$full = $matches[0];
+			$prop = $matches[1];
+			if (property_exists($this, $prop)) {
+				return $this->getArgHash('*prop*' . $prop, [$this->{$prop}]);
+			} else {
+				return $prop;
+			}
+		}, $encoded);
 	}
 
 

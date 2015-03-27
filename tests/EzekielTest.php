@@ -43,6 +43,17 @@ class EzekielTestCase extends TestCase {
 	}
 
 
+	function testCacheNotMixedUpByPropSyntaxWhenUsingLongSyntax() {
+		$this->myProp = 'foo';
+		$stub1 = $this->stub('SomeClass', ['foo' => [['with' => '*', 'returns' => '@myProp'],]]);
+
+		$this->myProp = 'bar';
+		$stub2 = $this->stub('SomeClass', ['foo' => [['with' => '*', 'returns' => '@myProp'],]]);
+
+		$this->assertNotSame($stub1, $stub2);
+	}
+
+
 	function testReturnClosure() {
 		$stub = $this->stub('SomeClass', ['foo' => function(){return 'closure';}]);
 		$this->assertSame('closure', $stub->foo());
