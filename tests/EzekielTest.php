@@ -25,7 +25,7 @@ class EzekielTestCase extends TestCase {
 
 	function testArgWildcardMatchesNull() {
 		$stub = $this->stub('SomeClass', ['foo' => [
-			['with' => ['*', 'jimjam', 'qux'], 'returns' => 'result'],
+			['with' => ['*', 'jimjam', 'qux'], 'return' => 'result'],
 		]]);
 
 		$this->assertSame('result', $stub->foo(null, 'jimjam', 'qux'));
@@ -45,10 +45,10 @@ class EzekielTestCase extends TestCase {
 
 	function testCacheNotMixedUpByPropSyntaxWhenUsingLongSyntax() {
 		$this->myProp = 'foo';
-		$stub1 = $this->stub('SomeClass', ['foo' => [['with' => '*', 'returns' => '@myProp'],]]);
+		$stub1 = $this->stub('SomeClass', ['foo' => [['with' => '*', 'return' => '@myProp'],]]);
 
 		$this->myProp = 'bar';
-		$stub2 = $this->stub('SomeClass', ['foo' => [['with' => '*', 'returns' => '@myProp'],]]);
+		$stub2 = $this->stub('SomeClass', ['foo' => [['with' => '*', 'return' => '@myProp'],]]);
 
 		$this->assertNotSame($stub1, $stub2);
 	}
@@ -86,7 +86,7 @@ class EzekielTestCase extends TestCase {
 
 	function testCanReturnLiveTestCasePropertiesWithAtSyntaxAndLongSyntax() {
 		$stub = $this->stub('SomeClass', ['foo' => [
-			['with' => ['somearg'], 'returns' => '@herp'],
+			['with' => ['somearg'], 'return' => '@herp'],
 		]]);
 
 		$this->herp = 'derp';
@@ -108,7 +108,7 @@ class EzekielTestCase extends TestCase {
 
 	function testCanMatchInvocationWithWildcardAllArgs() {
 		$stub = $this->stub('SomeClass', ['foo' => [
-			['expectArgs' => '*', 'times' => 1, 'andReturn' => 'some val 123'],
+			['expect' => '*', 'times' => 1, 'return' => 'some val 123'],
 		]]);
 
 		$this->assertSame('some val 123', $stub->foo());
@@ -119,7 +119,7 @@ class EzekielTestCase extends TestCase {
 
 	function testCanWildCardIndividualArgumentsForStubs() {
 		$stub = $this->stub('SomeClass', ['foo' => [
-			['with' => ['foo', '*'], 'returns' => 'something'],
+			['with' => ['foo', '*'], 'return' => 'something'],
 		]]);
 
 		$this->assertSame('something', $stub->foo('foo', 'jimjam'));
@@ -128,7 +128,7 @@ class EzekielTestCase extends TestCase {
 
 	function testCanReturnArbitraryArgsFromLongSyntax() {
 		$stub = $this->stub('SomeClass', ['foo' => [
-			['with' => ['*'], 'returns' => '~arg=2'],
+			['with' => ['*'], 'return' => '~arg=2'],
 		]]);
 
 		$this->assertSame('jimjam', $stub->foo('herpderp', 'jimjam'));
@@ -137,7 +137,7 @@ class EzekielTestCase extends TestCase {
 
 	function testCanReturnArbitraryArgsFromLongSyntaxThroughCallable() {
 		$stub = $this->stub('SomeClass', ['foo' => [
-			['with' => ['*'], 'returns' => '~arg=2 -> strtoupper'],
+			['with' => ['*'], 'return' => '~arg=2 -> strtoupper'],
 		]]);
 
 		$this->assertSame('JIMJAM', $stub->foo('herpderp', 'jimjam'));
@@ -203,8 +203,8 @@ class EzekielTestCase extends TestCase {
 	function testMatchesAllArgsIfWithIsArray() {
 		$stub = $this->stub('SomeClass', [
 			'foo' => [
-				['with' => ['foo', 'bar'], 'returns' => 'baz'],
-				['with' => '*',            'returns' => 'foo'],
+				['with' => ['foo', 'bar'], 'return' => 'baz'],
+				['with' => '*',            'return' => 'foo'],
 			],
 		]);
 
@@ -222,11 +222,11 @@ class EzekielTestCase extends TestCase {
 	function testReturnDifferentResultsForDifferentInvocations() {
 		$stub = $this->stub('SomeClass', [
 			'foo' => [
-				['with' => 'bar', 'returns' => 'baz'],
-				['with' => 'jim', 'returns' => 'jam'],
-				['with' => '1st', 'returns' => '~firstArg'],
-				['with' => 'me',  'returns' => '~self'],
-				['with' => '*',   'returns' => 'foo'],
+				['with' => 'bar', 'return' => 'baz'],
+				['with' => 'jim', 'return' => 'jam'],
+				['with' => '1st', 'return' => '~firstArg'],
+				['with' => 'me',  'return' => '~self'],
+				['with' => '*',   'return' => 'foo'],
 			],
 		]);
 
@@ -240,7 +240,7 @@ class EzekielTestCase extends TestCase {
 
 	function testStubWithExpectationsMustBeMet() {
 		$stub = $this->stub('SomeClass', ['foo' => [
-			['expectArgs' => ['arg']],
+			['expect' => ['arg']],
 		]]);
 		$stub->foo('arg');
 		$this->verifyMockObjects();
@@ -250,7 +250,7 @@ class EzekielTestCase extends TestCase {
 
 	function testStubWithGenericExpectationsWorks() {
 		$stub = $this->stub('SomeClass', ['foo' => [
-			['expectArgs' => ['jimjam'], 'andReturn' => 'hashbaz'],
+			['expect' => ['jimjam'], 'return' => 'hashbaz'],
 			['with' => '*', 'return' => 'somethjing else'],
 		]]);
 
@@ -263,7 +263,7 @@ class EzekielTestCase extends TestCase {
 
 	function testStubWithMultipleArgsIncludingWildCard() {
 		$stub = $this->stub('SomeClass', ['foo' => [
-			['expectArgs' => ['1', '2', '*']],
+			['expect' => ['1', '2', '*']],
 		]]);
 		$stub->foo('1', '2', 'foobar');
 		$this->verifyMockObjects();
@@ -273,7 +273,7 @@ class EzekielTestCase extends TestCase {
 
 	function testMockCanSayHowManyInvocations() {
 		$mock = $this->stub('SomeClass', ['foo' => [
-			['expectArgs' => ['bar'], 'times' => 2],
+			['expect' => ['bar'], 'times' => 2],
 		]]);
 		$mock->foo('bar');
 		$mock->foo('bar');

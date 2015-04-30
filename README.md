@@ -141,14 +141,14 @@ $stub->bar('qux'); // returns 'baz'
 
 ##Longer syntax
 
-Ezekiel can also accept a longer syntax that allows you to match arguments and return different values using `'with'` and `'returns'` keywords.
+Ezekiel can also accept a longer syntax that allows you to match arguments and return different values using `'with'` and `'return'` keywords.
 
 ```php
 <?php
 
 $stub = $this->stub('Foo', ['bar' => [
-	['with' => ['jim'],  'returns' => 'jam'],
-	['with' => ['herp'], 'returns' => 'derp'],
+	['with' => ['jim'],  'return' => 'jam'],
+	['with' => ['herp'], 'return' => 'derp'],
 ]]);
 
 $stub->bar('jim');  // returns 'jam'
@@ -161,8 +161,8 @@ Normally, the `'with'` property must be an array, and correponds to the argument
 <?php
 
 $stub = $this->stub('Foo', ['bar' => [
-	['with' => ['herp', 'derp'], 'returns' => 'slurp'],
-	['with' => ['herp', '*'],    'returns' => false],
+	['with' => ['herp', 'derp'], 'return' => 'slurp'],
+	['with' => ['herp', '*'],    'return' => false],
 ]]);
 
 $stub->bar('herp', 'derp');  // returns 'slurp'
@@ -175,8 +175,8 @@ You can also pass in the non-array string value `'*'` to match any combination o
 <?php
 
 $stub = $this->stub('Foo', ['bar' => [
-	['with' => ['herp'], 'returns' => 'derp'],
-	['with' => '*',      'returns' => 'my default value'],
+	['with' => ['herp'], 'return' => 'derp'],
+	['with' => '*',      'return' => 'my default value'],
 ]]);
 
 $stub->bar('herp');  // returns 'derp'
@@ -186,13 +186,13 @@ $stub->bar('bar');   // returns 'my default value'
 
 ##Creating mocks
 
-By default, Ezekiel creates test stubs, not mocks.  That means that we're specifying the behavior of the test double objects within the system under tests, but not directly testing how these objects are used.  If we want to **create true mock objects that contain expections**, Ezekiel can help with that too. To create a mock object that contains expectation, just use the longer syntax explained above, but use `'expectArgs'` and `'andReturn'` in place of `'with'` and `'returns'`.
+By default, Ezekiel creates test stubs, not mocks.  That means that we're specifying the behavior of the test double objects within the system under tests, but not directly testing how these objects are used.  If we want to **create true mock objects that contain expections**, Ezekiel can help with that too. To create a mock object that contains expectation, just use the longer syntax explained above, but use `'expect'` in place of `'with'`.
 
 ```php
 <?php
 
 $stub = $this->stub('Foo', ['bar' => [
-	['expectArgs' => ['jim'],  'andReturn' => 'jam'],
+	['expect' => ['jim'],  'return' => 'jam'],
 ]]);
 
 // returns 'jam' and adds to assertion count
@@ -206,7 +206,7 @@ You can also specify **how many times a mock invocation is expected** using the 
 <?php
 
 $stub = $this->stub('Foo', ['bar' => [
-	['expectArgs' => ['jim'],  'andReturn' => 'jam', 'times' => 1],
+	['expect' => ['jim'],  'return' => 'jam', 'times' => 1],
 ]]);
 
 // causes PHPUnit failure because invoked too many times
@@ -220,7 +220,7 @@ Ezekiel also allows you to do **simple argument wildcarding** by using the speci
 <?php
 
 $stub = $this->stub('Foo', ['bar' => [
-	['expectArgs' => ['jim', '*'],  'andReturn' => 'jam', 'times' => 1],
+	['expect' => ['jim', '*'],  'return' => 'jam', 'times' => 1],
 ]]);
 
 // causes PHPUnit pass because we wild-carded the second arg
@@ -233,9 +233,9 @@ You can make **multiple expectations for a single method**:
 <?php
 
 $stub = $this->stub('Foo', ['bar' => [
-	['expectArgs' => ['foobar'],   'andReturn' => 'hashbaz'],
-	['expectArgs' => ['jim', '*'], 'andReturn' => 'jam', 'times' => 1],
-	['expectArgs' => ['herp', 1],  'andReturn' => [1, 2, 3]],
+	['expect' => ['foobar'],   'return' => 'hashbaz'],
+	['expect' => ['jim', '*'], 'return' => 'jam', 'times' => 1],
+	['expect' => ['herp', 1],  'return' => [1, 2, 3]],
 ]]);
 ```
 
@@ -326,7 +326,7 @@ Pull the package in through Composer.
 ```js
 {
     "require": {
-        "netrivet/ezekiel": "0.1.*"
+        "netrivet/ezekiel": "0.2.*"
     }
 }
 ```

@@ -37,26 +37,26 @@ trait Ezekiel {
 			} else {
 
 				if ($this->isShortReturnSyntax($methodReturns)) {
-					$methodReturns = [['with' => '*', 'returns' => $methodReturns]];
+					$methodReturns = [['with' => '*', 'return' => $methodReturns]];
 
-					if ($methodReturns[0]['returns'] === '~neverCalled') {
-						$methodReturns = [['expectArgs' => '*', 'times' => 0]];
+					if ($methodReturns[0]['return'] === '~neverCalled') {
+						$methodReturns = [['expect' => '*', 'times' => 0]];
 						$isMock = true;
 					}
 				}
 
 				foreach ($methodReturns as $index => $return) {
 
-					if (isset($return['expectArgs'])) {
-						$methodReturns[$index]['with'] = $return['expectArgs'];
+					if (isset($return['expect'])) {
+						$methodReturns[$index]['with'] = $return['expect'];
 						$expectedArgs = [];
 						$isMock = true;
 
-						if ($return['expectArgs'] === '*') {
+						if ($return['expect'] === '*') {
 							$expectedArgs[] = Arg::cetera();
 
 						} else {
-							foreach ((array) $return['expectArgs'] as $expected) {
+							foreach ((array) $return['expect'] as $expected) {
 								$expectedArgs[] = $expected === '*' ? '*' : $expected;
 							}
 						}
@@ -83,39 +83,35 @@ trait Ezekiel {
 
 					foreach ($methodReturns as $return) {
 
-						if (isset($return['andReturn'])) {
-							$return['returns'] = $return['andReturn'];
-						}
-
-						if (!isset($return['returns'])) {
-							$return['returns'] = null;
+						if (!isset($return['return'])) {
+							$return['return'] = null;
 						}
 
 						$return['with'] = (array) $return['with'];
 
 						if (self::argumentsMatch($args, $return['with'])) {
-							if ($returnArg = self::returnArg($return['returns'])) {
+							if ($returnArg = self::returnArg($return['return'])) {
 								if ($returnArg['pipe']) {
 									return call_user_func_array($returnArg['pipe'], [$args[$returnArg['num']]]);
 								} else {
 									return $args[$returnArg['num']];
 								}
 
-							} else if ($return['returns'] === '~self') {
+							} else if ($return['return'] === '~self') {
 								return $prophecy;
 
-							} else if (is_string($return['returns']) && strpos($return['returns'], '~joinArgs') === 0) {
-								if (strpos($return['returns'], '|') !== false) {
-									$delimiter = str_replace('~joinArgs|', '', $return['returns']);
+							} else if (is_string($return['return']) && strpos($return['return'], '~joinArgs') === 0) {
+								if (strpos($return['return'], '|') !== false) {
+									$delimiter = str_replace('~joinArgs|', '', $return['return']);
 								} else {
 									$delimiter = '';
 								}
 
 								return join($delimiter, $args);
 
-							} else if (is_string($return['returns']) && strpos($return['returns'], '@') === 0) {
-								$prop = preg_replace('/^@/', '', $return['returns']);
-								$prop = property_exists($that, $prop) ? $that->{$prop} : $return['returns'];
+							} else if (is_string($return['return']) && strpos($return['return'], '@') === 0) {
+								$prop = preg_replace('/^@/', '', $return['return']);
+								$prop = property_exists($that, $prop) ? $that->{$prop} : $return['return'];
 
 								if (is_object($prop) && $prop instanceof \Closure) {
 									return call_user_func_array($prop, $args);
@@ -124,11 +120,11 @@ trait Ezekiel {
 									return $prop;
 								}
 
-							} else if (is_object($return['returns']) && $return['returns'] instanceof \Closure) {
-								return call_user_func_array($return['returns'], $args);
+							} else if (is_object($return['return']) && $return['return'] instanceof \Closure) {
+								return call_user_func_array($return['return'], $args);
 
 							} else {
-								return $return['returns'];
+								return $return['return'];
 							}
 						}
 					}
