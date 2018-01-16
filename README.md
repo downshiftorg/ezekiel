@@ -326,7 +326,7 @@ Pull the package in through Composer.
 ```js
 {
     "require": {
-        "netrivet/ezekiel": "0.2.*"
+        "downshiftorg/ezekiel": "0.2.*"
     }
 }
 ```
@@ -340,7 +340,7 @@ namespace Acme\Foo;
 
 class FooTest extends \PHPUnit_Framework_Testcase {
 
-	use \NetRivet\Ezekiel\Ezekiel;
+	use \DownShift\Ezekiel\Ezekiel;
 
 }
 ```
@@ -354,7 +354,7 @@ namespace Acme;
 
 class AcmeTestCase extends \PHPUnit_Framework_Testcase {
 
-	use \NetRivet\Ezekiel\Ezekiel;
+	use \DownShift\Ezekiel\Ezekiel;
 
 }
 ```

@@ -1,5 +1,5 @@
 <?php
-namespace NetRivet\Ezekiel;
+namespace DownShift\Ezekiel;
 
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase {
@@ -7,7 +7,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase {
 	use Ezekiel;
 
 	protected function transformClass($in) {
-		return '\NetRivet\Ezekiel\\' . $in;
+		return '\DownShift\Ezekiel\\' . $in;
 	}
 }
 
@@ -319,9 +319,3 @@ class EzekielTestCase extends TestCase {
 		$this->assertNotSame($stub3->foo(), $stub4->foo());
 	}
 }
-
-
-
-
-
-

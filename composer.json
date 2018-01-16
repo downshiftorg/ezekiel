@@ -1,5 +1,5 @@
 {
-    "name": "netrivet/ezekiel",
+    "name": "downshiftorg/ezekiel",
     "description": "Alternative syntax wrapper and added convenience methods for using phpspec/prophecy within PHPUnit",
     "license": "MIT",
     "keywords": [
@@ -10,7 +10,7 @@
     "authors": [
         {
             "name": "Jared Henderson",
-            "email": "jared@netrivet.com"
+            "email": "jared@pro.photo"
         }
     ],
     "require": {
@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "NetRivet\\Ezekiel\\": "src/"
+            "DownShift\\Ezekiel\\": "src/"
         }
     }
 }

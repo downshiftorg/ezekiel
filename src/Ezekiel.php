@@ -1,5 +1,5 @@
 <?php
-namespace NetRivet\Ezekiel;
+namespace DownShift\Ezekiel;
 
 
 use Prophecy\Argument as Arg;
