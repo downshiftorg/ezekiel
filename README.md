@@ -26,7 +26,7 @@ With Ezekiel, you would just write this:
 $stub = $this->stub('SomeClass', ['someMethod' => false]);
 ```
 
-##Short syntax
+## Short syntax
 
 For really simple stub objects, when you don't care about argument matching or returning different values on different invocations, you can use Ezekiel's short syntax:
 
@@ -44,7 +44,7 @@ $bar = $this->stub('Bar', [
 ]);
 ```
 
-##Special return values
+## Special return values
 
 Stubs/mocks can **return the first argument** passed by using the special string `~firstArg`
 
@@ -139,7 +139,7 @@ $stub->bar('foo'); // returns 'bar'
 $stub->bar('qux'); // returns 'baz'
 ```
 
-##Longer syntax
+## Longer syntax
 
 Ezekiel can also accept a longer syntax that allows you to match arguments and return different values using `'with'` and `'return'` keywords.
 
@@ -184,7 +184,7 @@ $stub->bar('foo');   // returns 'my default value'
 $stub->bar('bar');   // returns 'my default value'
 ```
 
-##Creating mocks
+## Creating mocks
 
 By default, Ezekiel creates test stubs, not mocks.  That means that we're specifying the behavior of the test double objects within the system under tests, but not directly testing how these objects are used.  If we want to **create true mock objects that contain expections**, Ezekiel can help with that too. To create a mock object that contains expectation, just use the longer syntax explained above, but use `'expect'` in place of `'with'`.
 
@@ -250,7 +250,7 @@ $stub = $this->stub('Foo', ['bar' => '~neverCalled']);
 $stub->bar();
 ```
 
-##Inspecting invocations
+## Inspecting invocations
 
 Prophecy keeps a record of your test double method invocations, so you can do cool stuff like:
 
@@ -306,7 +306,7 @@ protected transformClass($class) {
 }
 ```
 
-##Caching
+## Caching
 
 Ezekiel also caches stubbed objects and will returned a cached value if you request a stub with the exact same specifications.  This can give you a noticable speed increase since prophecy doesn't have to dynamically recreate the stubbed class multiple times. It also allows you to not worry about performance when setting up identical stubbed objects in different test methods.
 
@@ -319,7 +319,7 @@ $stub2 = $this->stub('SomeClass', ['foo' => 'blah blah']);
 $this->assertSame($stub1, $stub2); // true
 ```
 
-##Installation
+## Installation
 
 Pull the package in through Composer.
 
